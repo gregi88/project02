@@ -76,5 +76,5 @@ table th.desc:after {
 }
 
 table tr:nth-child(even) td {
-    background-color: #F2F2F2;
+    background-color: pink;
 }

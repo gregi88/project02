@@ -1,62 +1,109 @@
 (function() {
 
   var table = document.querySelector("#myTable"),
-  ths = table.querySelectorAll("thead th"),
-  trs = table.querySelectorAll("tbody tr");
+      ths = table.querySelectorAll("thead th"),
+      trs = table.querySelectorAll("tbody tr");
 
-// ths gives us nodeList that is array like object
+
+// we need to get index of clicked ths but we first we need to
+// transform array like object (nodeList) in to array
+
+// ths gives us nodeList
 //console.log(ths);
 
+// convertin NodeList in to array
 
-
-// converting array like object in to array
-/*
-var thsArrshort = Array.from(ths);
-console.log(thsArrshort);
-*/
-
-
-
-// what really stays behind Array.from();
 
 function makeArray(nodeList){
-  var arr = [];
+
+  array = [];
 
   for (var i = 0; i < nodeList.length; i++) {
-    arr.push(nodeList[i]);
+    array.push(nodeList[i]);
   }
-  return arr;
+
+  return array;
+
+}
+
+function clearClassName(nodeList){
+  for (var i = 0; i < nodeList.length; i++) {
+    nodeList[i].className = "";
+  }
 }
 
 
 
-// function functionName(e) is event handling function (on event object is created)
-// (e) is object handler
-// e.preventDefault()
-function sortBy(e) {
+function sortBy(e){
+
+      //catching event on clicket target element
+  var target = e.target;
+       //console.log(target);
+      // converted nodeList of ths
+  var thsArray = makeArray(ths);
+      //console.log(thsArray);
+
+      // converted nodeList of trs
+  var trsArray = makeArray(trs);
+      //console.log(trsArray);
+
+      //getting index of clicked ths
+  var index = thsArray.indexOf(target);
+      //console.log(index);
+
+      // empty document fragment
+  var docF = document.createDocumentFragment();
+      //console.log(docF);
+
+  var order = (target.className === "" || target.className === "desc") ? "asc" : "desc";
+      //console.log(order);
+  //console.log(target.indexOf);
+
+  clearClassName(ths);
+
+    trsArray.sort(function(a,b){
+      //getting tr elements
+        //console.log(a);
+        //console.log(b);
+
+        var tdA = a.children[index].textContent,
+            tdB = b.children[index].textContent;
+
+        //console.log(tdA);
+
+        if(tdA < tdB){
+          // to sort descendind change to 1
+          return order === "asc" ? -1 : 1;
+        } else if(tdA > tdB){
+          // to sort descendind change to -1
+          return order === "asc" ? 1 : -1;
+        }else {
+          return 0;
+        }
+    });
+
+    //console.log(trsArray);
+
+// adding tr to docF to dispaly it on page
+
+    trsArray.forEach(function(tr){
+      docF.appendChild(tr);
+    });
+
+    target.className = order;
+
+    table.querySelector("tbody").appendChild(docF);
 
 
-  var target = e.target,
-      thsArr = makeArray(ths),
-      trsArr = makeArray(trs),
-      indexOfThs = thsArr.indexOf(target);
-      // console.log(thsArr);
-      console.log(indexOfThs);
-
-trsArr.sort(function(a,b){ return a-b});
-
-
-
-
-
-
-  //console.log(target);
-  //console.log(ths.indexOf);
 
 }
 
 for (var i = 0; i < ths.length; i++) {
+
   ths[i].onclick = sortBy;
+
 }
+
+
 
 })();
